@@ -72,3 +72,18 @@ class FileStorage:
         if key in objects:
             del objects[key]
             self.save()
+
+    def delete(self, obj=None):
+        """Deletes obj from __objects if it's inside"""
+        if obj is None:
+            return
+        else:
+            objects = self.all()
+            # Use list to avoid RuntimeError during deletion
+            for key, value in list(objects.items()):
+                if value == obj:
+                    del objects[key]
+                    self.save()
+                    # Exit loop after deleting the object
+                    break
+
