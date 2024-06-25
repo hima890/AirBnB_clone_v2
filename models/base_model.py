@@ -5,6 +5,10 @@ This module contains the BaseModel class.
 import datetime
 import uuid
 import models
+from sqlalchemy import Column, String, DATETIME
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
 
 
 class BaseModel:
@@ -12,6 +16,11 @@ class BaseModel:
     This class serves as a base model for other classes.
     It provides attributes and methods common to all models.
     """
+    id = Column(String(60), nullable=False, primary_key=True, unique=True)
+    created_at = Column(DATETIME, nullable=False, default=datetime.datetime.utcnow())
+    updated_at = Column(DATETIME, nullable=False, default=datetime.datetime.utcnow())
+
+
 
     def __init__(self, *args, **kwargs):
         """
@@ -28,8 +37,6 @@ class BaseModel:
             self.created_at = datetime.datetime.now()
             self.updated_at = datetime.datetime.now()
 
-            # If it's a new instance, add it to the storage
-            models.storage.new(self)
         else:
             for key, value in kwargs.items():
                 if key != "__class__":
@@ -65,19 +72,25 @@ class BaseModel:
         Updates the 'updated_at' attribute with the current timestamp.
         """
         self.updated_at = datetime.datetime.now()
+        # If it's a new instance, add it to the storage
+        models.storage.new(self)
         models.storage.save()
 
     def to_dict(self):
-        """
-        Converts the object to a dictionary.
-        Returns:
-            dict: A dictionary representation of the object.
-        """
-        instance_dict = self.__dict__.copy()
-        instance_dict['__class__'] = self.__class__.__name__
-        instance_dict['created_at'] = self.created_at.isoformat()
-        instance_dict['updated_at'] = self.updated_at.isoformat()
-        return instance_dict
+        """Convert instance into dict format"""
+        res = {}
+        for key, value in self.__dict__.items():
+            if key != '_sa_instance_state':
+                if isinstance(value, datetime):
+                    res[key] = value.isoformat()
+                else:
+                    res[key] = value
+        res['__class__'] = self.__class__.__name__
+        return res
+
+    def delete(self):
+        """Deletes this BaseModel instance from the storage"""
+        models.storage.delete(self)
 
     def __str__(self):
         """

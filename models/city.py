@@ -2,17 +2,14 @@
 """
 class named city that inharits from BaseModel
 """
-from models.base_model import BaseModel
+from models.base_model import BaseModel, Base
+from sqlalchemy import Column, String, ForeignKey
 
 
-class City(BaseModel):
-    """A class named city that represents a city
+class City(BaseModel, Base):
+    """A class named City that represents a city"""
 
-    Attributes:
-        state_id (string): state id.
-        name (string): name of the city
+    __tablename__ = 'cities'
 
-    """
-
-    state_id = ""
-    name = ""
+    state_id = Column(String(60), ForeignKey('states.id'), nullable=False)
+    name = Column(String(128), nullable=False)

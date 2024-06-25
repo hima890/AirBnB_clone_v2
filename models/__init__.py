@@ -1,10 +1,12 @@
 #!/usr/bin/python3
-"""
-Module: __init__ module for AirBnB_clone project
-
-"""
+"""This module instantiates an object of class FileStorage"""
+import os
+from models.engine.db_storage import DBStorage
 from models.engine.file_storage import FileStorage
 
 
-storage = FileStorage()
+"""A unique FileStorage/DBStorage instance for all models."""
+storage = DBStorage() if os.getenv(
+    'HBNB_TYPE_STORAGE'
+    ) == 'db' else FileStorage()
 storage.reload()
