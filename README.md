@@ -155,6 +155,7 @@ The project consists of the following key components:
 ## Authors
 - Ibrahim Hanafi
 - Ahmed Basher Abdalla
+- Ruba Salih
 
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
