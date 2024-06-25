@@ -3,11 +3,13 @@
 This module contains the entry point of the command interpreter.
 """
 
-
 import cmd
+import os
 import json
+import re
 from models import storage
 from utility.dynamically_create_cls import dynamicallyCreateCls
+from utility.parse_value import parse_value
 from models.base_model import BaseModel
 from models.user import User
 from models.place import Place
@@ -27,7 +29,6 @@ console.py
 class HBNBCommand(cmd.Cmd):
 
     prompt = "(hbnb) "
-    # All the supported classes that globals function used
     __supported_classes = {
         "BaseModel",
         "User",
@@ -38,28 +39,39 @@ class HBNBCommand(cmd.Cmd):
         "Review"
     }
 
+    # All the supported classes that globals function used
     def do_create(self, arg):
         """
         Creates a new instance of BaseModel, saves it (to the JSON file)
-        and prints the id.
-        Usage: create <class name>
+        and prints the id. Also supports setting attributes using
+        <key>=<value> syntax.
+        Usage: create <class name> <param 1> <param 2> <param 3>...
         """
         args = arg.split()
 
         if not args:
             print("** class name missing **")
-            return None
+            return
 
-        if len(args) != 1:
-            print("** expicted one arguminte **")
-            return None
+        class_name = args[0]
 
-        className = args[0]
-        if className not in HBNBCommand.__supported_classes:
+        if class_name not in HBNBCommand.__supported_classes:
             print("** class doesn't exist **")
-            return None
+            return
 
-        dynamicallyCreateCls(className)
+        new_instance = eval(class_name)()
+
+        # Process additional arguments for attributes
+        for param in args[1:]:
+            match = re.match(r'^(\w+)=(".*?"|\d+\.\d+|\d+)$', param)
+            if match:
+                key, value = match.groups()
+                value = parse_value(value)
+                if value is not None:
+                    setattr(new_instance, key, value)
+
+        new_instance.save()
+        print(new_instance.id)
 
     def do_show(self, arg):
         """
@@ -317,6 +329,13 @@ class HBNBCommand(cmd.Cmd):
         """Override default `empty line + return` behaviour.
         """
         pass
+
+    def do_clear(self, arg):
+        """
+        Clears the console screen.
+        Usage: clear
+        """
+        os.system('cls' if os.name == 'nt' else 'clear')
 
     def do_quit(self, arg):
         """Quit command to exit the program.

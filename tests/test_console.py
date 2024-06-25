@@ -11,6 +11,7 @@ Unittest classes:
     TestHBNBCommand_update
 """
 import unittest
+from unittest.mock import patch, MagicMock
 from console import HBNBCommand
 from models import storage
 from models.base_model import BaseModel
@@ -65,6 +66,30 @@ class TestConsole(unittest.TestCase):
         created_id = output.strip()
         self.assertIn(f"User.{created_id}", storage.all())
         self._clear_stdout()
+
+    @patch('models.storage.save')
+    @patch('models.storage.new')
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_create_with_parameters(self, mock_stdout, mock_storage_new, mock_storage_save):
+        """Test create command with parameters"""
+        mock_storage_new.return_value = None
+        mock_storage_save.return_value = None
+
+        self.console.onecmd('create State name="California"')
+        output = mock_stdout.getvalue().strip()
+
+        # Check if the instance is created and saved
+        mock_storage_new.assert_called_once()
+        mock_storage_save.assert_called_once()
+
+        # Retrieve the created instance
+        created_instance = mock_storage_new.call_args[0][0]
+
+        # Verify the output ID matches the created instance's ID
+        self.assertEqual(output, created_instance.id)
+
+        # Check the name attribute
+        self.assertEqual(created_instance.name, "California")
 
     def test_show_BaseModel(self):
         """Test show command for BaseModel"""
@@ -205,6 +230,10 @@ class TestConsole(unittest.TestCase):
         instance = storage.all()[f"BaseModel.{instance.id}"]
         self.assertEqual(instance.name, "Old Name")
         self._clear_stdout()
+
+    def _clear_stdout(self):
+        self.stdout.truncate(0)
+        self.stdout.seek(0)
 
 if __name__ == "__main__":
     unittest.main()
