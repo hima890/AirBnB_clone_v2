@@ -2,10 +2,11 @@
 """
 class named review that inharits from BaseModel
 """
-from models.base_model import BaseModel
+from models.base_model import BaseModel, Base
+from sqlalchemy import Column, String, ForeignKey
 
 
-class Review(BaseModel):
+class Review(BaseModel, Base):
     """Represent a review
 
     Attributes:
@@ -14,6 +15,8 @@ class Review(BaseModel):
         text (string): The text of the review
 
     """
-    place_id = ""
-    user_id = ""
-    text = ""
+    __tablename__ = 'reviews'
+
+    place_id = Column(String(60), ForeignKey("places.id"), nullable=False)
+    user_id = Column(String(60), ForeignKey("users.id"), nullable=False)
+    text = Column(String(1024), nullable=False)
