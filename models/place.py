@@ -70,7 +70,7 @@ class Place(BaseModel, Base):
             return review_list
         @property
         def amenities(self):
-            """Get/set linked Amenities."""
+            """Get Amenities."""
             return self.amenity_ids
 
         @amenities.setter

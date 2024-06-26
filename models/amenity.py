@@ -7,7 +7,6 @@ from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 
 
-
 class Amenity(BaseModel, Base):
     """An amenity provided by a place/house.
 
