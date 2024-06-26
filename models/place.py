@@ -63,19 +63,11 @@ class Place(BaseModel, Base):
         @property
         def reviews(self):
             """Get a list of all linked Reviews."""
-            var = models.storage.all()
-            lista = []
-            result = []
-            for key in var:
-                review = key.replace('.', ' ')
-                review = shlex.split(review)
-                if (review[0] == 'Review'):
-                    lista.append(var[key])
-            for elem in lista:
-                if (elem.place_id == self.id):
-                    result.append(elem)
-            return (result)
-
+            review_list = []
+            for review in list(models.storage.all(Review).values()):
+                if review.place_id == self.id:
+                    review_list.append(review)
+            return review_list
         @property
         def amenities(self):
             """Get/set linked Amenities."""
