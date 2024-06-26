@@ -15,6 +15,7 @@ class Review(BaseModel, Base):
         text (string): The text of the review
 
     """
+
     __tablename__ = 'reviews'
 
     place_id = Column(String(60), ForeignKey("places.id"), nullable=False)
