@@ -65,9 +65,24 @@ class FileStorage:
         except FileNotFoundError:
             pass
 
+    def delete(self, key):
+        """Deletes an object from __objects using its key and updates the
+        JSON file."""
+        objects = self.all()
+        if key in objects:
+            del objects[key]
+            self.save()
+
     def delete(self, obj=None):
-        """ delete an existing element
-        """
-        if obj:
-            key = "{}.{}".format(type(obj).__name__, obj.id)
-            del self.__objects[key]
+        """Deletes obj from __objects if it's inside"""
+        if obj is None:
+            return
+        else:
+            objects = self.all()
+            # Use list to avoid RuntimeError during deletion
+            for key, value in list(objects.items()):
+                if value == obj:
+                    del objects[key]
+                    self.save()
+                    # Exit loop after deleting the object
+                    break
