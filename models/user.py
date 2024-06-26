@@ -15,6 +15,7 @@ class User(BaseModel, Base):
         first_name (string): The first name of the user, can be null
         last_name (string): The last name of the user, can be null
     """
+
     __tablename__ = 'users'
 
     email = Column(String(128), nullable=False)
