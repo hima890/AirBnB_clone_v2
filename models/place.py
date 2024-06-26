@@ -3,7 +3,6 @@
 class named place that inharits from BaseModel
 """
 import os
-import shlex
 import models
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, Table, String, Integer, Float, ForeignKey
@@ -56,7 +55,7 @@ class Place(BaseModel, Base):
     if os.getenv('HBNB_TYPE_STORAGE') == 'db':
         reviews = relationship("Review", cascade='all, delete, delete-orphan',
                                backref="place")
-        amenities = relationship("Amenity", secondary=place_amenity,
+        amenities = relationship("Amenity", secondary='place_amenity',
                                  viewonly=False,
                                  back_populates="place_amenities")
     else:
