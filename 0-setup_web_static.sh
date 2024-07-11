@@ -1,9 +1,4 @@
-#!/usr/bin/env bash
-# A Bash script that sets up your web servers for the deployment of web_static.
-
-# Update package list and install Nginx
-sudo apt-get update
-sudo apt-get install -y nginx
+#!/bin/bash
 
 # Create the directories if they don't already exist
 sudo mkdir -p /data/web_static/releases/test/
@@ -27,10 +22,36 @@ sudo ln -s /data/web_static/releases/test/ /data/web_static/current
 # Give ownership of the /data/ folder to the ubuntu user and group recursively
 sudo chown -R ubuntu:ubuntu /data/
 
-# Update Nginx configuration
-sudo sed -i '/server_name _;/a \\\n\tlocation /hbnb_static/ {\n\t\talias /data/web_static/current/;\n\t}\n' /etc/nginx/sites-available/default
+# Update Nginx configuration if the block is not already present
+if ! grep -q "location /hbnb_static/" /etc/nginx/sites-available/default; then
+    echo "Adding location block to Nginx configuration"
+    sudo sed -i '/server_name _;/a \
+\\n\
+\tlocation /hbnb_static/ {\
+\n\t\talias /data/web_static/current/;\
+\n\t}\
+\n' /etc/nginx/sites-available/default
+else
+    echo "Location block already exists in Nginx configuration"
+fi
+
+# Add the domain name to the server_name directive if not already there
+if ! grep -q "server_name mydomainname.tech;" /etc/nginx/sites-available/default; then
+    echo "Updating server_name in Nginx configuration"
+    sudo sed -i '/server_name _;/s/_;/ ibrahimhanafideveloper.tech;/' /etc/nginx/sites-available/default
+else
+    echo "Server name already set in Nginx configuration"
+fi
+
+# Test the Nginx configuration
+sudo nginx -t
 
 # Restart Nginx
-sudo service nginx restart
+if [ $? -eq 0 ]; then
+    echo "Restarting Nginx"
+    sudo systemctl restart nginx
+else
+    echo "Nginx configuration test failed"
+fi
 
 echo "Setup completed successfully!"
