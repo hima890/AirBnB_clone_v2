@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# A Bash script that sets up your web servers for the deployment of web_static.
 
 # Create the directories if they don't already exist
 sudo mkdir -p /data/web_static/releases/test/
