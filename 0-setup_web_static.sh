@@ -48,7 +48,7 @@ fi
 sudo nginx -t
 
 # Restart Nginx
-if [ $? -eq 0 ]; then
+if sudo nginx -t; then
     echo "Restarting Nginx"
     sudo systemctl restart nginx
 else
