@@ -3,7 +3,8 @@
 class named state that inharits from BaseModel
 """
 import os
-from sqlalchemy import Column, String
+from datetime import datetime
+from sqlalchemy import Column, String, DateTime
 from sqlalchemy.orm import relationship
 from models.base_model import BaseModel, Base
 from models.city import City
@@ -18,6 +19,9 @@ class State(BaseModel, Base):
 
     __tablename__ = 'states'
     if os.getenv('HBNB_TYPE_STORAGE') == 'db':
+        id = Column(String(60), nullable=False, primary_key=True)
+        created_at = Column(DateTime, nullable=False, default=datetime.utcnow())
+        updated_at = Column(DateTime, nullable=False, default=datetime.utcnow())
         name = Column(String(128), nullable=False)
         cities = relationship(
             'City', back_populates='state',

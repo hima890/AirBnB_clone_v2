@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """This is the user class"""
-from models.base_model import BaseModel, Base, Column, String
+from datetime import datetime
+from models.base_model import BaseModel, Base, Column, String, DateTime
 from sqlalchemy.orm import relationship
 import os
 
@@ -16,6 +17,9 @@ class User(BaseModel, Base):
 
     __tablename__ = 'users'
     if os.getenv('HBNB_TYPE_STORAGE') == 'db':
+        id = Column(String(60), nullable=False, primary_key=True)
+        created_at = Column(DateTime, nullable=False, default=datetime.utcnow())
+        updated_at = Column(DateTime, nullable=False, default=datetime.utcnow())
         email = Column(String(128), nullable=False)
         password = Column(String(128), nullable=False)
         first_name = Column(String(128), nullable=True)
