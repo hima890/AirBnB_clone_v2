@@ -6,7 +6,8 @@ import os
 import models
 from datetime import datetime
 from models.base_model import BaseModel, Base
-from sqlalchemy import Column, Table, String, Integer, Float, ForeignKey, DateTime
+from sqlalchemy import (Column, Table, String,
+                        Integer, Float, ForeignKey, DateTime)
 from sqlalchemy.orm import relationship
 
 place_amenity = Table('place_amenity', Base.metadata,
@@ -38,8 +39,10 @@ class Place(BaseModel, Base):
     __tablename__ = 'places'
     if os.getenv('HBNB_TYPE_STORAGE') == 'db':
         id = Column(String(60), nullable=False, primary_key=True)
-        created_at = Column(DateTime, nullable=False, default=datetime.utcnow())
-        updated_at = Column(DateTime, nullable=False, default=datetime.utcnow())
+        created_at = Column(DateTime, nullable=False,
+                            default=datetime.utcnow())
+        updated_at = Column(DateTime, nullable=False,
+                            default=datetime.utcnow())
         city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)
         user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
         name = Column(String(128), nullable=False)

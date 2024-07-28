@@ -18,8 +18,10 @@ class Amenity(BaseModel, Base):
     __tablename__ = 'amenities'
     if os.getenv('HBNB_TYPE_STORAGE') == 'db':
         id = Column(String(60), nullable=False, primary_key=True)
-        created_at = Column(DateTime, nullable=False, default=datetime.utcnow())
-        updated_at = Column(DateTime, nullable=False, default=datetime.utcnow())
+        created_at = Column(DateTime, nullable=False,
+                            default=datetime.utcnow())
+        updated_at = Column(DateTime, nullable=False,
+                            default=datetime.utcnow())
         name = Column(String(128), nullable=False)
         place_amenities = relationship('Place',
                                        secondary='place_amenity',
