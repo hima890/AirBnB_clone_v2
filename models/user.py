@@ -1,29 +1,34 @@
 #!/usr/bin/python3
-
-from models.base_model import BaseModel, Base
-from sqlalchemy import Column, String
+"""This is the user class"""
+from models.base_model import BaseModel, Base, Column, String
 from sqlalchemy.orm import relationship
+import os
 
 
 class User(BaseModel, Base):
-    """
-    A class named User that represents a user
-
+    """This is the class for user
     Attributes:
-        email (string): The email of the user, can't be null
-        password (string): The password of the user, can't be null
-        first_name (string): The first name of the user, can be null
-        last_name (string): The last name of the user, can be null
+        email: email address
+        password: password for you login
+        first_name: first name
+        last_name: last name
     """
 
     __tablename__ = 'users'
+    if os.getenv('HBNB_TYPE_STORAGE') == 'db':
+        email = Column(String(128), nullable=False)
+        password = Column(String(128), nullable=False)
+        first_name = Column(String(128), nullable=True)
+        last_name = Column(String(128), nullable=True)
 
-    email = Column(String(128), nullable=False)
-    password = Column(String(128), nullable=False)
-    first_name = Column(String(128), nullable=True)
-    last_name = Column(String(128), nullable=True)
-
-    places = relationship("Place", cascade='all, delete, delete-orphan',
-                          backref="user")
-    reviews = relationship("Review", cascade='all, delete, delete-orphan',
-                           backref="user")
+        places = relationship(
+            'Place', back_populates='user',
+            cascade='all, delete, delete-orphan')
+        reviews = relationship(
+            'Review', back_populates='user',
+            cascade='all, delete, delete-orphan')
+    else:
+        email = ""
+        password = ""
+        first_name = ""
+        last_name = ""

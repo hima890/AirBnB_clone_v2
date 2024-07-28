@@ -10,22 +10,29 @@ from models.city import City
 
 
 class State(BaseModel, Base):
-    """A class named State that represents a state"""
+    """This is the class for State
+    Attributes:
+        name: input name
+        cities = relationship between state and city tables.
+    """
 
     __tablename__ = 'states'
-
-    name = Column(String(128), nullable=False)
-    
     if os.getenv('HBNB_TYPE_STORAGE') == 'db':
-        cities = relationship('City', backref='state', cascade='all, delete')
+        name = Column(String(128), nullable=False)
+        cities = relationship(
+            'City', back_populates='state',
+            cascade='all, delete, delete-orphan')
+
     else:
+        name = ""
+
         @property
         def cities(self):
-            """Getter attribute that returns the list of City instances with state_id equals to the current State.id"""
+            """returns list of Cities and some relationships"""
             from models import storage
-            city_list = []
-            all_cities = storage.all(City)
-            for city in all_cities.values():
-                if city.state_id == self.id:
-                    city_list.append(city)
-            return city_list
+            cities_instances = []
+            cities_dict = storage.all(City)
+            for key, value in cities_dict.items():
+                if self.id == value.state_id:
+                    cities_instances.append(value)
+            return (cities_instances)
