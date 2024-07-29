@@ -7,7 +7,7 @@ from datetime import datetime
 from sqlalchemy import Column, String, DateTime
 from sqlalchemy.orm import relationship
 from models.base_model import BaseModel, Base
-from models.city import City
+
 
 
 class State(BaseModel, Base):
@@ -35,9 +35,10 @@ class State(BaseModel, Base):
 
         @property
         def cities(self):
+            from models import storage
+            from models.city import City
             """returns list of City instances with state_id equal
             to the current State.id"""
-            from models import storage
             cities_instances = []
             for city in storage.all(City).values():
                 if city.state_id == self.id:
