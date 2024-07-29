@@ -40,8 +40,9 @@ class FileStorage:
         else:
             new_dict = {}
             for key, value in self.__objects.items():
-                if isinstance(value, cls) or ((isinstance(cls, str)
-                                               and cls == key.split('.')[0])):
+                if isinstance(value, cls) or (
+                    isinstance(cls, str) and cls == key.split('.')[0]
+                ):
                     new_dict[key] = value
             return new_dict
 
