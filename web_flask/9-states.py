@@ -28,7 +28,8 @@ def states():
 def state_by_id(id):
     """Display a state and its cities by id"""
     try:
-        state = storage.get(State, id)
+        states = storage.all("State")
+        state = next((s for s in states.values() if s.id == id), None)
         if state:
             state.cities = sorted(state.cities, key=lambda x: x.name)
             return render_template('9-states.html', state=state)
