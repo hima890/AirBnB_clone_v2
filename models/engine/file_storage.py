@@ -17,9 +17,9 @@ class FileStorage:
         __file_path: path to the JSON file
         __objects: objects will be stored
     """
+
     __file_path = "file.json"
     __objects = {}
-
     class_map = {
         'BaseModel': BaseModel,
         'User': User,
