@@ -35,18 +35,23 @@ class DBStorage:
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        """Query all objects for curent session based on class name"""
+        """Query all objects for current session based on class name"""
         obj_dict = {}
-        cls = self.all_classes[cls]
-        if cls is not None:
+        if cls:
+            if isinstance(cls, str):
+                cls = self.all_classes[cls]
+            elif cls.__name__ in self.all_classes:
+                cls = self.all_classes[cls.__name__]
+            else:
+                raise KeyError(f"Class {cls} is not recognized.")
             objects = self.__session.query(cls).all()
         else:
-            objects = self.__session.query(
-                State, City, User, Amenity, Place, Review)
+            objects = []
+            for cls in self.all_classes.values():
+                objects.extend(self.__session.query(cls).all())
         for obj in objects:
             key = obj.__class__.__name__ + '.' + obj.id
-            value = obj
-            obj_dict[key] = value
+            obj_dict[key] = obj
         return obj_dict
 
     def new(self, obj):

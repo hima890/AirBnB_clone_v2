@@ -6,19 +6,13 @@ import os
 import models
 from datetime import datetime
 from models.base_model import BaseModel, Base
-from sqlalchemy import (Column, Table, String,
-                        Integer, Float, ForeignKey, DateTime)
+from sqlalchemy import Column, Table, String, Integer, Float, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 
 place_amenity = Table('place_amenity', Base.metadata,
-                      Column('place_id', String(60),
-                             ForeignKey('places.id'),
-                             primary_key=True, nullable=False),
-                      Column('amenity_id', String(60),
-                             ForeignKey('amenities.id'),
-                             primary_key=True, nullable=False)
+                      Column('place_id', String(60), ForeignKey('places.id'), primary_key=True, nullable=False),
+                      Column('amenity_id', String(60), ForeignKey('amenities.id'), primary_key=True, nullable=False)
                       )
-
 
 class Place(BaseModel, Base):
     """This is the class for Place
@@ -27,7 +21,7 @@ class Place(BaseModel, Base):
         user_id: user id
         name: name input
         description: string of description
-        number_rooms: number of room in int
+        number_rooms: number of rooms in int
         number_bathrooms: number of bathrooms in int
         max_guest: maximum guest in int
         price_by_night: price for staying in int
@@ -38,11 +32,9 @@ class Place(BaseModel, Base):
 
     __tablename__ = 'places'
     if os.getenv('HBNB_TYPE_STORAGE') == 'db':
-        id = Column(String(60), nullable=False, primary_key=True)
-        created_at = Column(DateTime, nullable=False,
-                            default=datetime.utcnow())
-        updated_at = Column(DateTime, nullable=False,
-                            default=datetime.utcnow())
+        id = Column(String(60), primary_key=True, nullable=False)
+        created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+        updated_at = Column(DateTime, default=datetime.utcnow, nullable=False, onupdate=datetime.utcnow)
         city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)
         user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
         name = Column(String(128), nullable=False)
@@ -55,16 +47,9 @@ class Place(BaseModel, Base):
         longitude = Column(Float, nullable=True)
         amenity_ids = []
 
-        reviews = relationship('Review',
-                               back_populates='place',
-                               cascade='all, delete,delete-orphan')
-
+        reviews = relationship('Review', back_populates='place', cascade='all, delete, delete-orphan')
         user = relationship('User', back_populates='places')
-
-        amenities = relationship('Amenity',
-                                 secondary=place_amenity,
-                                 viewonly=False,
-                                 back_populates='place_amenities')
+        amenities = relationship('Amenity', secondary=place_amenity, viewonly=False, back_populates='place_amenities')
 
     else:
         city_id = ""
@@ -95,7 +80,7 @@ class Place(BaseModel, Base):
             all = []
             for amenity_id in self.amenity_ids:
                 all.append(models.storage.get('Amenity', amenity_id))
-            return (all)
+            return all
 
         @amenities.setter
         def amenities(self, obj):
