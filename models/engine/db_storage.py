@@ -76,4 +76,3 @@ class DBStorage:
         """ call close on private session. """
         self.__session.close()
         self.reload()
-
