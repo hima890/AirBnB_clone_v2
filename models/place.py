@@ -6,13 +6,23 @@ import os
 import models
 from datetime import datetime
 from models.base_model import BaseModel, Base
-from sqlalchemy import Column, Table, String, Integer, Float, ForeignKey, DateTime
+from sqlalchemy import (Column, Table, String,
+                        Integer, Float, ForeignKey,
+                        DateTime)
 from sqlalchemy.orm import relationship
 
 place_amenity = Table('place_amenity', Base.metadata,
-                      Column('place_id', String(60), ForeignKey('places.id'), primary_key=True, nullable=False),
-                      Column('amenity_id', String(60), ForeignKey('amenities.id'), primary_key=True, nullable=False)
+                      Column('place_id', String(60),
+                             ForeignKey('places.id'),
+                             primary_key=True,
+                             nullable=False),
+                      Column('amenity_id',
+                             String(60),
+                             ForeignKey('amenities.id'),
+                             primary_key=True,
+                             nullable=False)
                       )
+
 
 class Place(BaseModel, Base):
     """This is the class for Place
@@ -34,7 +44,8 @@ class Place(BaseModel, Base):
     if os.getenv('HBNB_TYPE_STORAGE') == 'db':
         id = Column(String(60), primary_key=True, nullable=False)
         created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-        updated_at = Column(DateTime, default=datetime.utcnow, nullable=False, onupdate=datetime.utcnow)
+        updated_at = Column(DateTime, default=datetime.utcnow, nullable=False,
+                            onupdate=datetime.utcnow)
         city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)
         user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
         name = Column(String(128), nullable=False)
@@ -47,9 +58,16 @@ class Place(BaseModel, Base):
         longitude = Column(Float, nullable=True)
         amenity_ids = []
 
-        reviews = relationship('Review', back_populates='place', cascade='all, delete, delete-orphan')
+        reviews = relationship('Review',
+                               back_populates='place',
+                               cascade='all, delete, delete-orphan'
+                               )
         user = relationship('User', back_populates='places')
-        amenities = relationship('Amenity', secondary=place_amenity, viewonly=False, back_populates='place_amenities')
+        amenities = relationship('Amenity',
+                                 secondary=place_amenity,
+                                 viewonly=False,
+                                 back_populates='place_amenities'
+                                 )
 
     else:
         city_id = ""

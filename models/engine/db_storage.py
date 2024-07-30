@@ -39,11 +39,13 @@ class DBStorage:
     def set_mysql_engine(self, target, connection, **kw):
         """Set the default charset for MySQL tables"""
         if self.__engine.name == 'mysql':
-            connection.execute(text('SET SESSION sql_mode = "NO_ENGINE_SUBSTITUTION";'))
+            connection.execute(text(
+                'SET SESSION sql_mode = "NO_ENGINE_SUBSTITUTION";')
+                               )
             for table in target.tables.values():
                 table.kwargs['mysql_charset'] = 'latin1'
                 if 'mysql_collate' in table.kwargs:
-                    del table.kwargs['mysql_collate']  # Remove the collation setting if present
+                    del table.kwargs['mysql_collate']
 
     def all(self, cls=None):
         """Query all objects for current session based on class name"""
