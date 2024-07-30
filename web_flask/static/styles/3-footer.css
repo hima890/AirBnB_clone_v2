@@ -6,7 +6,6 @@ footer {
     position: absolute;
     display: grid;
     text-align: center;
-    bottom: 0;
 }
 
 footer span {
