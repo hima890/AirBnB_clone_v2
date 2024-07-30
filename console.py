@@ -7,16 +7,17 @@ import cmd
 import os
 import json
 import re
-from models.city import City
 from models import storage
 from utility.dynamically_create_cls import dynamicallyCreateCls
 from utility.parse_value import parse_value
 from models.base_model import BaseModel
 from models.user import User
 from models.place import Place
-from models.state import State
 from models.amenity import Amenity
 from models.review import Review
+from models.city import City
+from models.state import State
+
 """"
 console.py
     This class represents the command interpreter, and the control center
@@ -343,3 +344,5 @@ class HBNBCommand(cmd.Cmd):
         return True
 
 
+if __name__ == '__main__':
+    HBNBCommand().cmdloop()
