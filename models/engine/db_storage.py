@@ -9,14 +9,13 @@ from models.city import City
 from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine, text
+from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy import event
 
 
 class DBStorage:
-    """This class creates the engine for a mysql database
-    storage system"""
+    """This class creates the engine for a mysql database storage system"""
 
     all_classes = {"BaseModel": BaseModel, "User": User, "State": State,
                    "City": City, "Amenity": Amenity, "Place": Place,
@@ -25,7 +24,7 @@ class DBStorage:
     __session = None
 
     def __init__(self):
-        """Instatiate the engine and drop if test database"""
+        """Instantiate the engine and drop if test database"""
         self.__engine = create_engine("mysql+mysqldb://{}:{}@{}/{}".format(
             os.environ['HBNB_MYSQL_USER'],
             os.environ['HBNB_MYSQL_PWD'],
@@ -33,6 +32,18 @@ class DBStorage:
             os.environ['HBNB_MYSQL_DB']), pool_pre_ping=True)
         if os.getenv('HBNB_ENV') == 'test':
             Base.metadata.drop_all(self.__engine)
+
+        # Set the default charset and collation
+        event.listen(Base.metadata, 'before_create', self.set_mysql_engine)
+
+    def set_mysql_engine(self, target, connection, **kw):
+        """Set the default charset for MySQL tables"""
+        if self.__engine.name == 'mysql':
+            connection.execute(text('SET SESSION sql_mode = "NO_ENGINE_SUBSTITUTION";'))
+            for table in target.tables.values():
+                table.kwargs['mysql_charset'] = 'latin1'
+                if 'mysql_collate' in table.kwargs:
+                    del table.kwargs['mysql_collate']  # Remove the collation setting if present
 
     def all(self, cls=None):
         """Query all objects for current session based on class name"""
