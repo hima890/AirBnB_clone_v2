@@ -22,7 +22,11 @@ def states():
     try:
         states = storage.all("State").values()
         states = sorted(states, key=lambda x: x.name)
-        return render_template('9-states.html', states=states)
+        len1 = len(states)
+        if len1 == 0:
+            return render_template('9-states.html', len1=100)
+        else:
+            return render_template('9-states.html', states=states)
     except SQLAlchemyError as e:
         return f"An error occurred: {e}", 500
 
@@ -43,4 +47,4 @@ def state_by_id(id):
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
