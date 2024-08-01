@@ -173,10 +173,12 @@ No known bugs at this time.
 
 
 ### Authors
-Ibrahim Hanafi
-Ahmed basher
+# Ibrahim Hanafi
 
-Second part of Airbnb: Ruba Salih
+
+# Ahmed basher
+
+# Second part of Airbnb:  Ruba Salih]
 
 ### License
 Public Domain. No copy write protection.
